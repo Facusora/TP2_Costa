@@ -10,8 +10,4 @@ while opcion !=8:
     print("7. Actualizar entregas de alumnos v´ıa mail.")
     print("8. Salir.")
     opcion=int()(input("Eliga una opcion:"))
-<<<<<<< HEAD
-    print("Dale messi")
-=======
-    print("tu mama")
->>>>>>> 93c9c677d5287f97c20c67c04f1be7ece81074a7
+

@@ -1,3 +1,13 @@
+import os 
+import Funciones_de_Gogle_drive
+
+def borrar_pantalla():
+    if os.name == "posix":
+        os.system("clear")
+    elif os.name == "ce" or os.name == "nt" or os.name == "dos":
+        os.system("cls")
+
+
 def validar_menu() -> int:
     '''
     Pre: Pide un numero en un rango
@@ -12,7 +22,6 @@ def validar_menu() -> int:
 
     return int(numero)
 
-
 opcion=0
 while opcion !=8:
     print("-----MENU PRINCIPAL-----")
@@ -21,14 +30,14 @@ while opcion !=8:
     print("3. Subir un archivo.")
     print("4. Descargar un archivo.")
     print("5. Sincronizar.")
-    print("6. Generar carpetas de una evaluaci´on.")
-    print("7. Actualizar entregas de alumnos v´ıa mail.")
+    print("6. Generar carpetas de una evaluacion.")
+    print("7. Actualizar entregas de alumnos vıa mail.")
     print("8. Salir.")
     opcion=validar_menu()   
 
 
     if opcion==1:
-        print("1")
+        Funciones_de_Gogle_drive.listar_archivos()
     
     elif opcion==2:
         print("2")

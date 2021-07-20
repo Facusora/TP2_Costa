@@ -1,6 +1,7 @@
 import os 
 import Funciones_de_Gogle_drive
 
+
 def borrar_pantalla():
     if os.name == "posix":
         os.system("clear")
@@ -13,14 +14,14 @@ def validar_menu() -> int:
     Pre: Pide un numero en un rango
     Post: Te responde si el numero esta en el rango
     '''
-    numero = input("Ingrese una opcion: ")                        
-    while not numero.isnumeric() or (int(numero)) >8 or (int(numero)) <1 :
+    number = input("Ingrese una opcion: ")                        
+    while not number.isnumeric() or (int(number)) >8 or (int(number)) <1 :
         print("")
         print("Esa opcion no es valida!")
         print("")
-        numero = input("Ingrese una opcion valida:")
+        number = input("Ingrese una opcion valida:")
 
-    return int(numero)
+    return int(number)
 
 opcion=0
 while opcion !=8:
@@ -35,9 +36,8 @@ while opcion !=8:
     print("8. Salir.")
     opcion=validar_menu()   
 
-
     if opcion==1:
-        Funciones_de_Gogle_drive.listar_archivos()
+        Funciones_de_Gogle_drive.file_list_menu()
     
     elif opcion==2:
         print("2")

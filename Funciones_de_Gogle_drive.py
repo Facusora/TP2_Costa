@@ -8,6 +8,10 @@ from googleapiclient.http import MediaIoBaseDownload
 import pandas as pd 
 
 def borrar_pantalla()->None:
+    '''
+    Pre: -
+    Post: Borra la pantalla
+    '''
     if os.name == "posix":
         os.system("clear")
     elif os.name == "ce" or os.name == "nt" or os.name == "dos":

@@ -6,24 +6,21 @@ import io
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 import pandas as pd 
+import yaml
 
 def borrar_pantalla()->None:
-    '''
-    Pre: -
-    Post: Borra la pantalla
-    '''
     if os.name == "posix":
         os.system("clear")
     elif os.name == "ce" or os.name == "nt" or os.name == "dos":
         os.system("cls")
 
-def validar_rango() -> int:
+def validar_rango(range) -> int:
     '''
     Pre: Pide un numero en un rango
     Post: Te responde si el numero esta en el rango
     '''
     opcion = input("Ingrese una opcion: ")                        
-    while not opcion.isnumeric()  or (int(opcion)) >2 or (int(opcion)) <1 :
+    while not opcion.isnumeric()  or (int(opcion)) >range or (int(opcion)) <1 :
         print("")
         print("Esa opcion no es valida!")
         print("")
@@ -125,22 +122,76 @@ def dowload_files(diccionary_files:dict)->None:
 
         if continue_dowload != "si":
             done = False
-'''
+
 def upload_files()->None:
-    
+    '''
     Pre: Pide selecioonar un archivo
     Post: Sube el archivo a google drive
-    
+    '''
+    start = True
+    while start:
+        format_upload = list_possible_files_upload()
+        show_local_folders_and_files()
+        file_upload = list_in_local_folder()
 
-    file_metadata = {'name': 'photo.jpg'}
-    media = MediaFileUpload(f'C:/Evaluaciones/{file_upload}', mimetype='image/jpeg')
-    service = service__drive.obtener_servicio()
+        if file_upload != "s": #PEDIMOS QUE EL RETURN CON EL NOMBRE DEL ARCHIVO SEA DISTINTO DE VACIO
 
-    file = service.files().create(body=file_metadata,
-                                    media_body=media,
-                                    fields='id').execute()
-    print ('File ID: %s' % file.get('id'))
-'''
+            file_metadata = {'name': f'{file_upload}'}
+            media = MediaFileUpload(f'C:/Evaluaciones/{file_upload}', mimetype=f'{format_upload}')
+            service = service__drive.obtener_servicio()
+
+            file = service.files().create(body=file_metadata,
+                                            media_body=media,
+                                            fields='id').execute()
+            print ("Subida de archivo exitosa")
+
+        continue_upload = input ("Quiere subir otro archivo (si/no)?:" )
+        
+        if continue_upload != "si": start= False
+
+def list_possible_files_upload()->str():
+    diccionary_formats = {'foto':'image/jpeg',
+                            'Pdf': 'Solicitud PDF',
+                            'Texto':'text/plain', 
+                            'Word':'aplicación / msword',
+                            'Zip':'aplicación / zip'}
+    borrar_pantalla()
+    print("-------TIPOS DE ARCHIVOS DISPONIBLES-----------")
+    for keys in diccionary_formats:
+        print(yaml.dump(keys))
+
+    start = True
+    while start :
+        format_upload = input ("Ingrese que tipo de archivo quiere subir:")
+
+        if format_upload in diccionary_formats.keys():     #PIDO QUE EL FORMATO ESTE EN EL DIC
+            format_upload = diccionary_formats[format_upload]
+            start = False
+            return format_upload    
+            
+        elif format_upload not in diccionary_formats.keys():    #SI EL FORMATO NO ESTA EN EL DIC QUE SIGA CICLANDO
+            print("\nEse formato no esta disponible\n")
+
+def list_in_local_folder()->str():
+    directory = "C:\\Evaluaciones"
+
+    start = True
+    while start:
+        local_folder=os.listdir(directory)
+        file_upload = input ("Ingrese el nombre del archivo que quiere subir o escriba s para salir :")
+
+        if file_upload in local_folder:
+            start = False
+            print("El archivo existe, preparando para subir a google drive")
+            
+
+        elif file_upload== "s":
+            start = False
+        
+        else: print("Ese archivo no existe")
+
+    return file_upload
+
 def show_remote_folders_and_files()->dict:
     '''
     Pre: -
@@ -257,17 +308,59 @@ def show_local_folders_and_files()->None:
     else:
         create_main_folder()
 
-def search_local_files()->None:
-    '''
-    Pre: Pide datos de una carpeta
-    Post: Se mueve sobre esa carpeta y muestra sus datos
-    '''
-    directory="C:\\Evaluaciones"
-    search= input ("\nDesea realizar una busqueda (si/no)?" )
+def search_local_folders()->None:
+    list_folders = ["C:\Evaluaciones"]
+    directory = "C:\Evaluaciones"
+    
+    search = input ("\nDesea ingresar a alguna carpeta?(si/no):")
 
-    #while search != "no":
-        #name_file = input ("\nEscriba el nombre de la carpeta que desea buscar:")        
-        #search = input ("Escriba no para salir:") #POR AHORA SOLO SE PUEDEN VER LOS ARCHIVOS EN LA CARPETA PRINCIPAL
+    if search =="si": start =True
+
+    else: start = False
+  
+    while start:
+        Folder = input("\nIngrese el nombre de la carpeta:")
+        results = directory + f'\\{Folder}'
+    
+        if os.path.isdir (results) : #REVISAMOS QUE EL ARCHIVO SEA UNA CAREPTA
+            borrar_pantalla()
+            directory = directory +  f'\\{Folder}'
+            listing_files = os.listdir(directory) 
+            print(f"------------Archivos encoentrados------------")
+            change_format(listing_files)
+            list_folders.append(Folder)
+        else: 
+            print("\nError carpeta incorrecta / inexsistente")
+
+        list_folders, directory = back_folders(Folder,list_folders) #LLAMAMOS A LA FUNCION "BACK FOLDERS" PARA PREGUNTAR SI EL USUARIO QUIERE VOLVER ATRAS
+        continue_search = input ("\nQuieres seguir buscando (si/no)?" )
+
+        if continue_search != "si": start = False 
+
+
+def back_folders(Folder:str,list_folders:list):
+    start = True
+    while start:
+        back = input( "\nQuieres volver atras (si/no)?:")
+
+        if back != "si":
+            route = '\\'.join(list_folders)
+            start = False
+
+        elif back =="si" and len(list_folders)>1 :
+            borrar_pantalla()
+            list_folders.pop()
+            route = '\\'.join(list_folders)
+            listing_files=os.listdir(route)
+            print(f"------------Archivos encoentrados------------")
+            change_format(listing_files)
+
+        else :
+            route = '\\'.join(list_folders)
+            start = False 
+            print("\nEstas en el directorio principal") 
+
+    return list_folders, route
 
 def file_list_menu()->None:
     '''
@@ -277,8 +370,9 @@ def file_list_menu()->None:
     print("-------OPCIONES------")
     print("1-Ver archivos en Google Drive")
     print("2-Ver archivos descargados")
-    print("")
-    opcion=validar_rango()
+    print("3-Salir")
+    range= 3
+    opcion=validar_rango(range)
 
     if opcion == 1:
         borrar_pantalla()
@@ -288,9 +382,10 @@ def file_list_menu()->None:
         search_folders(diccionary)
 
     elif opcion==2:
+        borrar_pantalla()
         print("---------Archivos que se encuentran en tu carpeta principal---------")
         show_local_folders_and_files()
-        search_local_files()
+        search_local_folders()
         print("")
 
 def dowload_menu()->None:
@@ -299,25 +394,43 @@ def dowload_menu()->None:
     print("2-Salir")
     #print("2-Descargar carpetas")
     print("")
-    opcion=validar_rango()
+    range= 2
+    opcion=validar_rango(range)
 
     if opcion == 1:
+        borrar_pantalla()
         diccionary_files = {}
         dowload_files(diccionary_files)
 
     #elif opcion == 2:
         
 
-def menu_create_archives():
+def create_archives_menu():
     print("-------OPCIONES------")
     #print("1-Crear una archivo")
     print("1-Crear una carpeta")
     print("2-Salir")
     #print("2-Crear un archvio")
-    opcion=validar_rango()
+    range= 2
+    opcion=validar_rango(range)
 
     if opcion == 1:
+        borrar_pantalla()
         create_local_and_remote_folders()
 
     #elif opcion == 2:
         
+def upload_menu():
+    print("-------OPCIONES------")
+    print("1-Subir un archivo")
+    print("2-Salir")
+    range= 2
+    opcion=validar_rango(range)
+
+    if opcion == 1:
+        borrar_pantalla()
+        upload_files()
+
+
+
+

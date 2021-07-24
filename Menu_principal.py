@@ -39,15 +39,19 @@ def main()->None:
         opcion=validar_menu()   
 
         if opcion==1:
+            borrar_pantalla()
             Funciones_de_Gogle_drive.file_list_menu()
         
         elif opcion==2:
-            Funciones_de_Gogle_drive.menu_create_archives()
+            borrar_pantalla()
+            Funciones_de_Gogle_drive.create_archives_menu()
         
         elif opcion==3:
-            print("3")
+            borrar_pantalla()
+            Funciones_de_Gogle_drive.upload_menu()
         
         elif opcion==4:
+            borrar_pantalla()
             Funciones_de_Gogle_drive.dowload_menu()
         
         elif opcion==5:

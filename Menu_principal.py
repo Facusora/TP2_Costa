@@ -7,7 +7,6 @@ def borrar_pantalla():
     elif os.name == "ce" or os.name == "nt" or os.name == "dos":
         os.system("cls")
 
-
 def validar_menu() -> int:
     '''
     Pre: Pide un numero en un rango
@@ -23,7 +22,6 @@ def validar_menu() -> int:
     return int(number)
 
 def main()->None:
-
     opcion=0
     while opcion !=8:
         borrar_pantalla()

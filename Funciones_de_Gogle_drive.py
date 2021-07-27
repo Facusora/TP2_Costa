@@ -79,42 +79,14 @@ def create_local_and_remote_folders()->None:
         keep_creating = input ("Desea crear otra carpeta?(si/no):")
 
         if keep_creating != "si": start = False
-
-def create_files()->None:
-    '''
-    Pre: Pide ingresar un nombre y un formato
-    Post: Crea una archivo en la carpeta principal del usuario
-    '''
-    start = True
-    while start :
-        name_file = input ("\nIngrese el nombre del archivo que quiere crear:")
-
-        if name_file !="":
-            extension = select_extension()
-
-            path = "C:\Evaluaciones"    #GENERO LOS ARCHIVOS EN LA CARPETA PRINCIPAL DEL USUARIO
-            while not os.path.exists(path):
-                os.mkdir(path )
-
-            archive = open(f"{path}" + f'\\{name_file + extension}', "w")
-            archive.close()
-
-            create_another_file = input ("\nQuieres crear otro archivo?(si/no):")
-
-            if create_another_file !="si": start = False
-        
-        else :print("\nDebe ingresar un nombre para el archivo")
         
 def select_extension()->str:
     '''
     Pre: Pide ingresar un formato de archivo
     Post: Valida que el formato este disponible
     '''
-    diccionary_extensions = {'Pdf': '.pdf',
-                            'Texto':'.txt', 
-                            'Word':'.docx',
-                            'Excel':'.xls',
-                            'Power point':'.sldx'}
+    diccionary_extensions = {'Texto':'.txt', 
+                            'Word':'.docx',}
 
     borrar_pantalla()
     print("-------TIPOS DE EXTENSIONES DISPONIBLES-----------")
@@ -124,15 +96,74 @@ def select_extension()->str:
     start = True
     while start :
         extension = input ("Ingrese el nombre la extension que desea que tenga el archivo:")
+        mimetype = select_mymetype(extension)
 
         if extension in diccionary_extensions.keys():     #PIDO QUE LA EXTENSION ESTE EN EL DIC
             extension = diccionary_extensions[extension]
             start = False
-            return extension  
+            return extension, mimetype
             
         elif extension not in diccionary_extensions.keys():    #SI LA EXTENSION NO ESTA EN EL DIC QUE SIGA CICLANDO
             print("\nEsa extension no esta disponible\n")
+
+
+def create_remote_and_local_files()->None:
+    '''
+    Pre: Pide ingresar un nombre y un formato
+    Post: Crea una archivo en la carpeta principal del usuario
+    '''
+    path = 'C:\Evaluaciones'  #GENERO LOS ARCHIVOS EN LA CARPETA PRINCIPAL DEL USUARIO
+    start = True
+    while start :
+        file_name = input ("\nIngrese el nombre del archivo que quiere crear:")
+
+        if file_name !="":
             
+            extension, mimetype = select_extension()
+            file_format = file_name + extension
+            create_remote_files(file_format, mimetype)
+            
+            while not os.path.exists(path):
+                os.mkdir(path)
+
+            route =f'{path}' + f'\\{file_format}'
+            archive = open(route, 'w')
+            archive.close()
+    
+            create_another_file = input ("\nQuieres crear otro archivo?(si/no):")
+
+            if create_another_file !="si": start = False
+        
+        else :print("\nDebe ingresar un nombre para el archivo")
+
+def create_remote_files(file_name:str,mimeType:str):
+    '''
+    Pre: -
+    Post: Crea un archivo en la nube
+    '''
+    drive_service = service__drive.obtener_servicio()
+
+    file_metadata = {
+    'name' :f'{file_name}',
+    'mimeType' :f'{mimeType}'            
+    }                     
+
+    file = drive_service.files().create(body=file_metadata,
+                                        fields='id').execute()
+
+
+def select_mymetype(mimeType:str)->str:
+    '''
+    Pre: -
+    Post: Returna la extension del archivo a crear
+    '''
+    diccionary_mimeType = {'Texto':'.txt','Word':'application/vnd.google-apps.document',}
+    
+    if mimeType in diccionary_mimeType.keys():
+        mimeType = diccionary_mimeType[mimeType]#PIDO QUE LA EXTENSION ESTE EN EL DIC
+
+    return mimeType
+
 def show_local_folders_and_files()->None:
     '''
     Pre:-
@@ -149,8 +180,8 @@ def show_local_folders_and_files()->None:
         create_main_folder()
 
 def search_local_folders()->None:
-    list_folders = ["C:\Evaluaciones"]
-    directory = "C:\Evaluaciones"
+    list_folders = ['C:\Evaluaciones']
+    directory = 'C:\Evaluaciones'
     
     search = input ("\nDesea ingresar a alguna carpeta?(si/no):")
 
@@ -360,15 +391,19 @@ def dowload_files(diccionary_files:dict)->None:
 
 def choose_dowload_location():
     borrar_pantalla()
+    print("\nSeleccione la carpeta donde desea descargar el archivo\n")
     show_local_folders_and_files()
     results = search_local_folders()
 
     return results
 
+def search_folder_upload():
+    search_in_folders = input ("Quieres buscar en alguna carpeta?:")
+
 def prepare_to_upload(direction:str,file_name:str):
     '''
-    Pre: Pide buscar un archivo en el directorio
-    Post: Sube ese archivo a google drive 
+    Pre: -
+    Post: Sube un archivo a la carpeta principal de google drive
     '''
     service = service__drive.obtener_servicio()
     folder_id = service.files().get(fileId='root').execute()['id']
@@ -379,7 +414,7 @@ def prepare_to_upload(direction:str,file_name:str):
     }
     media = MediaFileUpload(f'{direction}', resumable=True)
     file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    print("\nArchivo subio con exito")
+    
         
 def select_file_to_upload()->str:
     start = True
@@ -389,7 +424,7 @@ def select_file_to_upload()->str:
 
     while start:    
         file_name = input ("\nIngrese el nombre del archivo que desea subir:")
-        direction = route + f"\\{file_name}"
+        direction = route + f'\\{file_name}'
     
         if os.path.isfile (direction) :
             start = False
@@ -413,9 +448,10 @@ def upload_files():
     while start:
         borrar_pantalla() 
         direction, file_name = select_file_to_upload() #FUNCION PARA BUSCAR EL ARCHIVO QUE DESEA SUBIR EL USUARIO
-    
+      
         if direction !="" and file_name !="":
             prepare_to_upload(direction, file_name)
+            print("\nArchivo subio con exito")
 
         continue_upload = input ("\nQuieres subir otro archivo (si/no)?:")
 
@@ -479,7 +515,7 @@ def create_archives_menu():
 
     elif opcion == 2:
         borrar_pantalla()
-        create_files()
+        create_remote_and_local_files()
     
 def upload_menu():
     print("-------OPCIONES------")

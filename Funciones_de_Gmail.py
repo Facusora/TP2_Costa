@@ -114,7 +114,7 @@ def traer_informacion() -> None:
     codigos_id = []
     informacion_total  = {}
     
-    result = gmail_service.users().messages().list(userId='me', q="after:2021/07/22").execute()   
+    result = gmail_service.users().messages().list(userId='me', q="after:1627410055").execute()   # 1627410055 es un dia/hora/min en segundos 
     j = 0
     
         
@@ -134,7 +134,7 @@ def traer_informacion() -> None:
         bien_asunto = asunto.split(",")
         
 
-        punto_zip = result2["snippet"]
+        punto_zip = result2["payload"]["parts"][1]["filename"]
         bien_zip = punto_zip.split(".")
         
 

@@ -6,7 +6,7 @@ import io
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 import pandas as pd 
-import yaml
+#import yaml
 
 def borrar_pantalla()->None:
     if os.name == "posix":
@@ -91,7 +91,7 @@ def select_extension()->str:
     borrar_pantalla()
     print("-------TIPOS DE EXTENSIONES DISPONIBLES-----------")
     for keys in diccionary_extensions:
-        print(yaml.dump(keys)) #BIBLIOTECA PARA MEJORAR EL PRINT DEL DICCIONARIO
+        print(keys) #BIBLIOTECA PARA MEJORAR EL PRINT DEL DICCIONARIO
 
     start = True
     while start :
@@ -374,7 +374,9 @@ def dowload_files(diccionary_files:dict)->None:
     
                 start = False
                 while not start:
-                    status, start = dowloader.next_chunk()
+                    status,start = dowloader.next_chunk()
+                    
+
                     print("Descargar en proceso  {0}".format(status.progress() * 100)  )
                     create_main_folder() #EN EL CASO DE QUE NUNCA SE HAYA CREADO UNA CARPETA PRINCIPAL, LA CREAMOS
 
@@ -529,5 +531,5 @@ def upload_menu():
         upload_files()
 
 
-
-
+dowload_menu()
+1

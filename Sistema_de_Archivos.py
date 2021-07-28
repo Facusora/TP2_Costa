@@ -1,18 +1,22 @@
 import zipfile
 import os
-
+import Funciones_de_Gmail
 ruta_zip = "C:\Evaluaciones"
 ruta_extraccion = "C:\Evaluaciones"
 password = None
 
-#archivo_zip = zipfile.ZipFile(ruta_zip, "r")
-#try:
- #   print(archivo_zip.namelist())
- #   archivo_zip.extractall(pwd=password, path=ruta_extraccion)
-#except:
- #   pass
+for j in informacion_total:
+        print(j)
+        mimeMessage = informacion_total[j][2]
 
-#archivo_zip.close()
+archivo_zip = zipfile.ZipFile(ruta_zip, "r")
+try:
+    print(archivo_zip.namelist())
+    archivo_zip.extractall(pwd=password, path=ruta_extraccion)
+except:
+    print("ERROR")
+
+archivo_zip.close()
 
 
 

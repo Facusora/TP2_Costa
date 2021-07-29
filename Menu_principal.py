@@ -26,7 +26,7 @@ def validar_menu() -> int:
 
 def main()->None:
     opcion=0
-    while opcion !=8:
+    while opcion !=7:
         borrar_pantalla()
         print("-----MENU PRINCIPAL-----")
         print("1. Listar archivos de la carpeta actual")
@@ -34,9 +34,8 @@ def main()->None:
         print("3. Subir un archivo.")
         print("4. Descargar un archivo.")
         print("5. Sincronizar.")
-        print("6. Generar carpetas de una evaluacion.")
-        print("7. Actualizar entregas de alumnos vıa mail.")
-        print("8. Salir.")
+        print("6. Generar carpetas de una evaluacion /Actualizar entregas de alumnos vıa mail.")
+        print("7. Salir.")
         opcion=validar_menu()   
 
         if opcion==1:
@@ -62,8 +61,5 @@ def main()->None:
             borrar_pantalla()
             Funciones_de_Gmail.traer_informacion()
             Sistema_de_Archivos.Descomprimir_Zips()
-        
-        elif opcion==7:
-            print("7")
 
 main()

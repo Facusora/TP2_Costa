@@ -4,14 +4,14 @@ import Funciones_de_Gmail
 #Descomprime archivo, y los guarda
 
 def Descomprimir_Zips()->None:
-    
+    informacion_total2 = Funciones_de_Gmail.traer_informacion()
     ruta_zip = "C:\Evaluaciones"
     ruta_extraccion = "C:\Evaluaciones"
     password = None
 
-    for j in informacion_total:
+    for j in informacion_total2:
             print(j)
-            mimeMessage = informacion_total[j][2]
+            mimeMessage = informacion_total2[j][2]
 
     archivo_zip = zipfile.ZipFile(ruta_zip, "r")
     try:
@@ -21,19 +21,22 @@ def Descomprimir_Zips()->None:
         print("ERROR")
 
     archivo_zip.close()
+    create_directory()
+    search_local_folders()
 
 
+def create_directory():
+    # Se define el nombre de la carpeta o directorio a crear
+    directorio = "C:\Evaluaciones\Docentes\Alumnos"
 
+    try:
+        os.mkdir(directorio)
 
-# Se define el nombre de la carpeta o directorio a crear
-directorio = "C:\Evaluaciones\Docentes\Alumnos"
+    except OSError:
 
-try:
-    os.mkdir(directorio)
-except OSError:
-    print("La creación del directorio %s falló" % directorio)
-else:
-    print("Se ha creado el directorio: %s " % directorio)
+        print("La creación del directorio %s falló" % directorio)
+    else:
+        print("Se ha creado el directorio: %s " % directorio)
 
 def search_local_folders()->None:
     list_folders = ["C:\Evaluaciones"]
@@ -64,5 +67,4 @@ def search_local_folders()->None:
         if continue_search != "si": start = False
             
         
-        
-search_local_folders()
+

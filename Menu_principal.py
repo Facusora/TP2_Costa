@@ -1,5 +1,8 @@
 import os 
 import Funciones_de_Gogle_drive
+import pandas as pd
+import Funciones_de_Gmail
+import Sistema_de_Archivos
 
 def borrar_pantalla():
     if os.name == "posix":
@@ -56,7 +59,9 @@ def main()->None:
             print("5")
         
         elif opcion==6:
-            print("6")
+            borrar_pantalla()
+            Funciones_de_Gmail.traer_informacion()
+            Sistema_de_Archivos.Descomprimir_Zips()
         
         elif opcion==7:
             print("7")

@@ -6,7 +6,7 @@ import io
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.http import MediaIoBaseDownload
 import pandas as pd 
-
+import yaml
 
 def borrar_pantalla()->None:
     if os.name == "posix":
@@ -93,7 +93,7 @@ def select_extension()->str:
     borrar_pantalla()
     print("-------TIPOS DE EXTENSIONES DISPONIBLES-----------")
     for keys in diccionary_extensions:
-        print(keys) #BIBLIOTECA PARA MEJORAR EL PRINT DEL DICCIONARIO
+        print(yaml.dump(keys)) #BIBLIOTECA PARA MEJORAR EL PRINT DEL DICCIONARIO
 
     start = True
     while start :
